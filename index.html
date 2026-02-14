@@ -3,174 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Intel Report - Kelolakan 2026</title>
+    <title>Kelolakan - AI Business Intelligence 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .ai-glow { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
         @media print {
             .no-print { display: none !important; }
             body { background: white; padding: 0; }
-            .shadow-2xl { shadow: none !important; border: none !important; }
-            .print-border { border: 1px solid #e2e8f0 !important; border-radius: 1rem !important; }
-            canvas { max-width: 100% !important; height: auto !important; }
+            .print-container { border: none !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen py-6 px-4 font-sans">
-    <div id="report-container" class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 print-border">
+<body class="bg-slate-50 min-h-screen antialiased text-slate-900">
+
+    <div class="max-w-6xl mx-auto py-8 px-4 print-container">
         
-        <div class="bg-gradient-to-r from-indigo-900 to-slate-900 p-8 text-white flex flex-col md:flex-row items-center gap-6">
-            <div class="relative group">
-                <div id="logo-preview" class="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center border-2 border-dashed border-slate-600 overflow-hidden">
-                    <span id="logo-placeholder" class="text-[10px] text-center p-2 opacity-50 uppercase font-bold">Upload Logo</span>
-                    <img id="logo-img" class="hidden w-full h-full object-cover">
-                </div>
-                <input type="file" id="logo-input" accept="image/*" class="hidden" onchange="previewLogo(event)">
-                <label for="logo-input" class="no-print absolute -bottom-2 -right-2 bg-indigo-600 p-2 rounded-full cursor-pointer shadow-lg hover:bg-indigo-500 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    </svg>
-                </label>
-            </div>
-
-            <div class="flex-1 text-center md:text-left">
-                <input type="text" id="businessName" placeholder="Nama Usaha Anda" class="bg-transparent border-b border-slate-700 text-3xl font-black w-full outline-none focus:border-indigo-400 placeholder-slate-600 mb-1 capitalize">
-                <p class="text-indigo-400 text-xs font-bold tracking-[0.3em] uppercase">Financial Analysis Report</p>
-                <p id="print-date" class="hidden print:block text-[10px] text-slate-500 mt-2 font-mono"></p>
-            </div>
-        </div>
-
-        <div class="p-8 grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <div class="lg:col-span-4 space-y-6 no-print">
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 border-b pb-2">Entry Data</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Biaya Tetap/Bulan</label>
-                            <input type="number" id="fixedCost" placeholder="0" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Bahan Baku/Batch</label>
-                            <input type="number" id="bahanBaku" placeholder="0" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Biaya Lain/Batch</label>
-                            <input type="number" id="biayaLain" placeholder="0" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase">Output Unit</label>
-                            <input type="number" id="jumlahUnit" value="1" class="w-full p-3 bg-indigo-50 border border-indigo-100 rounded-xl font-black text-indigo-700">
-                        </div>
+        <header class="bg-indigo-950 rounded-3xl p-8 mb-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 opacity-10 rounded-full -mr-32 -mt-32"></div>
+            
+            <div class="flex items-center gap-6 z-10">
+                <div class="relative group">
+                    <div id="logo-preview" class="w-20 h-20 bg-indigo-900 rounded-2xl flex items-center justify-center border border-indigo-700 overflow-hidden shadow-inner">
+                        <span id="logo-placeholder" class="text-[9px] font-bold opacity-40 uppercase tracking-tighter">Logo</span>
+                        <img id="logo-img" class="hidden w-full h-full object-cover">
                     </div>
+                    <input type="file" id="logo-input" accept="image/*" class="hidden" onchange="previewLogo(event)">
+                    <label for="logo-input" class="no-print absolute -bottom-1 -right-1 bg-white text-indigo-900 p-1.5 rounded-full cursor-pointer shadow-xl hover:scale-110 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /></svg>
+                    </label>
                 </div>
-                <button onclick="prosesAnalisis()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-indigo-100 transition-all active:scale-95 uppercase tracking-widest text-sm">
-                    Generate Analysis
+                <div>
+                    <input type="text" id="businessName" placeholder="Nama Bisnis Anda" class="bg-transparent border-b border-indigo-800 text-2xl font-extrabold w-full outline-none focus:border-indigo-400 transition-colors">
+                    <p class="text-indigo-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-1">Laporan Analisis Strategis</p>
+                </div>
+            </div>
+            
+            <div class="text-center md:text-right z-10 no-print">
+                <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 px-6 py-2.5 rounded-full text-xs font-bold transition-all border border-white/10 backdrop-blur-sm">
+                    Generate PDF Report
                 </button>
             </div>
+        </header>
 
-            <div id="hasilArea" class="hidden lg:col-span-8 space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <aside class="lg:col-span-4 space-y-6 no-print">
+                <div class="glass-card rounded-3xl p-6 shadow-sm border border-slate-200">
+                    <h2 class="text-sm font-extrabold text-slate-800 uppercase tracking-widest mb-6 flex items-center">
+                        <span class="w-2 h-2 bg-indigo-600 rounded-full mr-2"></span> Input Data Biaya
+                    </h2>
+                    <div class="space-y-5">
+                        <div class="group">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Fixed Cost (Sewa/Gaji)</label>
+                            <input type="number" id="fixedCost" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none font-semibold">
+                        </div>
+                        <div class="group">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Bahan Baku (Per Batch)</label>
+                            <input type="number" id="bahanBaku" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none font-semibold">
+                        </div>
+                        <div class="group">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Lainnya/BOP (Per Batch)</label>
+                            <input type="number" id="biayaLain" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all outline-none font-semibold">
+                        </div>
+                        <div class="group">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Output Produksi (Unit)</label>
+                            <input type="number" id="jumlahUnit" value="1" class="w-full p-3.5 bg-indigo-50 border border-indigo-100 rounded-2xl font-black text-indigo-700 transition-all outline-none">
+                        </div>
+                    </div>
+                    <button onclick="analyzeBusiness()" class="w-full mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-100 transition-all active:scale-95 uppercase text-xs tracking-[0.2em]">
+                        Analyze Business
+                    </button>
+                </div>
+            </aside>
+
+            <main id="hasilArea" class="hidden lg:col-span-8 space-y-8">
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-slate-900 rounded-3xl p-8 text-white">
-                        <p class="text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-2 text-center md:text-left">HPP per Unit</p>
-                        <h2 id="resHpp" class="text-4xl font-black text-center md:text-left">Rp 0</h2>
+                    <div class="bg-indigo-600 rounded-3xl p-8 text-white shadow-xl ai-glow">
+                        <p class="text-indigo-200 text-[10px] font-bold uppercase tracking-widest mb-2">HPP per Unit Produk</p>
+                        <h2 id="resHpp" class="text-4xl font-black italic">Rp 0</h2>
                     </div>
-                    <div class="bg-white border border-slate-100 rounded-3xl p-6 flex items-center justify-around shadow-sm">
+                    <div class="bg-white border border-slate-200 rounded-3xl p-8 flex justify-around items-center">
                         <div class="text-center">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase">Margin</p>
-                            <p id="resMargin" class="text-green-600 font-black text-lg"></p>
+                            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">ROI</p>
+                            <p id="resROI" class="text-2xl font-black text-indigo-600">0%</p>
                         </div>
-                        <div class="w-px h-10 bg-slate-100"></div>
+                        <div class="h-10 w-px bg-slate-100"></div>
                         <div class="text-center">
-                            <p class="text-slate-400 text-[10px] font-bold uppercase">ROI</p>
-                            <p id="resROI" class="text-indigo-600 font-black text-lg"></p>
+                            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Margin</p>
+                            <p id="resMargin" class="text-2xl font-black text-emerald-500">Rp 0</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm">
-                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Struktur Komposisi Nilai (HPP vs Laba)</h4>
+                <div id="aiBox" class="p-6 rounded-3xl border-2 transition-all duration-500 flex items-start gap-4 shadow-sm">
+                    <div id="aiIcon" class="p-3 rounded-2xl bg-white shadow-sm"></div>
+                    <div>
+                        <h4 id="aiTitle" class="text-xs font-black uppercase tracking-widest mb-1">AI Business Advisor</h4>
+                        <p id="aiMessage" class="text-sm font-medium leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Visualisasi Struktur Harga (HPP vs Laba)</h4>
                     <div class="h-64">
-                        <canvas id="myChart"></canvas>
+                        <canvas id="mainChart"></canvas>
                     </div>
                 </div>
 
-                <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-3xl">
-                    <h4 class="font-black text-indigo-800 text-[10px] uppercase mb-2 tracking-widest italic">Break Even Point Analysis</h4>
-                    <p id="resBEP" class="text-sm text-indigo-900 leading-relaxed font-medium"></p>
+                <div class="bg-slate-900 rounded-3xl p-8 text-white">
+                    <h4 class="text-indigo-400 text-[10px] font-black uppercase tracking-widest mb-4 italic">Break Even Point Analysis</h4>
+                    <p id="resBEP" class="text-sm font-medium leading-relaxed opacity-90"></p>
                 </div>
 
-                <button onclick="window.print()" class="no-print w-full flex items-center justify-center bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-black transition-all">
-                    Download PDF Report
-                </button>
-            </div>
+            </main>
         </div>
 
-        <div class="p-6 bg-slate-50 text-center border-t border-slate-100">
-            <p class="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">Powered by Kelolakan @2026</p>
-        </div>
+        <footer class="mt-12 pt-8 border-t border-slate-200 text-center">
+            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-[0.6em]">Powered by Kelolakan @2026</p>
+        </footer>
     </div>
 
     <script>
-        let myChart = null;
+        let chartInstance = null;
 
-        function formatIDR(val) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
-        }
+        function format(v) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(v); }
 
-        function previewLogo(event) {
+        function previewLogo(e) {
             const reader = new FileReader();
-            reader.onload = function(){
-                const output = document.getElementById('logo-img');
-                const placeholder = document.getElementById('logo-placeholder');
-                output.src = reader.result;
-                output.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            };
-            reader.readAsDataURL(event.target.files[0]);
+            reader.onload = () => {
+                document.getElementById('logo-img').src = reader.result;
+                document.getElementById('logo-img').classList.remove('hidden');
+                document.getElementById('logo-placeholder').classList.add('hidden');
+            }
+            reader.readAsDataURL(e.target.files[0]);
         }
 
-        function prosesAnalisis() {
+        function analyzeBusiness() {
             const fc = parseFloat(document.getElementById('fixedCost').value) || 0;
             const bb = parseFloat(document.getElementById('bahanBaku').value) || 0;
             const bl = parseFloat(document.getElementById('biayaLain').value) || 0;
             const unit = parseFloat(document.getElementById('jumlahUnit').value) || 1;
 
-            if(bb === 0) return alert("Bahan baku tidak boleh 0!");
+            if(bb === 0) return alert("Masukkan biaya bahan baku!");
 
             const hpp = (bb + bl) / unit;
-            const margin = hpp * 0.5; // Profit 50%
+            const margin = hpp * 0.3; // Standar margin awal 30%
             const hargaJual = hpp + margin;
-            const bepUnit = Math.ceil(fc / margin);
+            const bep = Math.ceil(fc / margin);
+            const roi = (margin / hpp) * 100;
 
-            document.getElementById('resHpp').innerText = formatIDR(hpp);
-            document.getElementById('resMargin').innerText = formatIDR(margin);
-            document.getElementById('resROI').innerText = "50%";
-            document.getElementById('resBEP').innerHTML = `Untuk menutup biaya tetap sebesar <b>${formatIDR(fc)}</b>, Anda wajib menjual <b>${bepUnit} unit</b> per bulan dengan margin profit 50%.`;
-            document.getElementById('print-date').innerText = "Generated: " + new Date().toLocaleString('id-ID');
+            // Update UI
+            document.getElementById('resHpp').innerText = format(hpp);
+            document.getElementById('resROI').innerText = roi.toFixed(0) + "%";
+            document.getElementById('resMargin').innerText = format(margin);
+            document.getElementById('resBEP').innerHTML = `Bisnis Anda mencapai titik impas (balik modal operasional) jika menjual minimal <span class="text-indigo-400 font-bold">${bep} unit</span> per bulan.`;
+            
+            // AI Logic
+            const aiBox = document.getElementById('aiBox');
+            const aiTitle = document.getElementById('aiTitle');
+            const aiMsg = document.getElementById('aiMessage');
+            const aiIcon = document.getElementById('aiIcon');
+
+            if(roi < 20) {
+                aiBox.className = "p-6 rounded-3xl border-2 border-rose-100 bg-rose-50 flex items-start gap-4 shadow-sm";
+                aiTitle.className = "text-xs font-black uppercase tracking-widest mb-1 text-rose-700";
+                aiMsg.innerText = "Peringatan: ROI Anda di bawah 20%. Bisnis dalam zona risiko tinggi. Pertimbangkan untuk menaikkan harga jual atau melakukan efisiensi bahan baku segera.";
+                aiIcon.innerHTML = "⚠️";
+            } else if(roi >= 50) {
+                aiBox.className = "p-6 rounded-3xl border-2 border-emerald-100 bg-emerald-50 flex items-start gap-4 shadow-sm";
+                aiTitle.className = "text-xs font-black uppercase tracking-widest mb-1 text-emerald-700";
+                aiMsg.innerText = "Luar Biasa: ROI Anda sangat sehat (50%+). Struktur biaya Anda sangat efisien. Ini adalah waktu yang tepat untuk melakukan ekspansi atau meningkatkan budget pemasaran.";
+                aiIcon.innerHTML = "🚀";
+            } else {
+                aiBox.className = "p-6 rounded-3xl border-2 border-indigo-100 bg-indigo-50 flex items-start gap-4 shadow-sm";
+                aiTitle.className = "text-xs font-black uppercase tracking-widest mb-1 text-indigo-700";
+                aiMsg.innerText = "Kondisi Stabil: ROI Anda berada di level aman. Teruskan pengawasan pada biaya overhead agar profit tetap konsisten setiap bulannya.";
+                aiIcon.innerHTML = "✅";
+            }
+
             document.getElementById('hasilArea').classList.remove('hidden');
-
-            updateChart(hpp, margin);
+            renderChart(hpp, margin);
         }
 
-        function updateChart(hpp, margin) {
-            const ctx = document.getElementById('myChart').getContext('2d');
-            
-            if (myChart) { myChart.destroy(); }
-
-            myChart = new Chart(ctx, {
-                type: 'bar',
+        function renderChart(hpp, laba) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
                 data: {
-                    labels: ['Komponen Nilai Produk (Rupiah)'],
-                    datasets: [
-                        { label: 'Modal (HPP)', data: [hpp], backgroundColor: '#6366f1', borderRadius: 8 },
-                        { label: 'Laba (Profit)', data: [margin], backgroundColor: '#10b981', borderRadius: 8 }
-                    ]
+                    labels: ['Modal (HPP)', 'Laba (Profit)'],
+                    datasets: [{
+                        data: [hpp, laba],
+                        backgroundColor: ['#4f46e5', '#10b981'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10, weight: 'bold' } } } },
-                    scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
+                    plugins: { legend: { position: 'bottom' } }
                 }
             });
         }
