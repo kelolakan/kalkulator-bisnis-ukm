@@ -54,4 +54,81 @@
 
             <div id="hasilArea" class="hidden space-y-6">
                 <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-                    <div class="relative
+                    <div class="relative z-10">
+                        <p class="text-blue-400 text-xs font-bold uppercase mb-1">HPP per Unit:</p>
+                        <h2 id="resHpp" class="text-5xl font-black italic">Rp 0</h2>
+                        <div class="mt-6 pt-6 border-t border-slate-700 grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-slate-500 text-[10px] uppercase">Margin per Unit</p>
+                                <p id="resMargin" class="text-green-400 font-bold text-sm"></p>
+                            </div>
+                            <div>
+                                <p class="text-slate-500 text-[10px] uppercase">Potensi ROI</p>
+                                <p id="resROI" class="text-blue-400 font-bold text-sm"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border-2 border-blue-50 p-6 rounded-3xl shadow-sm">
+                    <h4 class="font-bold text-slate-800 mb-4 flex items-center">
+                        💡 Rekomendasi Harga Jual
+                    </h4>
+                    <div id="saranHarga" class="space-y-3"></div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-100 p-6 rounded-3xl">
+                    <h4 class="font-bold text-amber-800 mb-2 italic">🎯 Target Titik Impas (BEP)</h4>
+                    <p id="resBEP" class="text-sm text-amber-900 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatIDR(val) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+        }
+
+        function prosesAnalisis() {
+            const fc = parseFloat(document.getElementById('fixedCost').value) || 0;
+            const bb = parseFloat(document.getElementById('bahanBaku').value) || 0;
+            const bl = parseFloat(document.getElementById('biayaLain').value) || 0;
+            const unit = parseFloat(document.getElementById('jumlahUnit').value) || 1;
+
+            if(bb === 0) return alert("Bahan baku tidak boleh kosong!");
+
+            // Kalkulasi HPP
+            const hpp = (bb + bl) / unit;
+            
+            // Strategi Harga (Markup 50% untuk Ritel)
+            const hargaJual = hpp * 1.5;
+            const margin = hargaJual - hpp;
+            const roi = (margin / hpp) * 100;
+
+            // Kalkulasi BEP (Fixed Cost / Margin)
+            const bepUnit = Math.ceil(fc / margin);
+
+            // Update UI
+            document.getElementById('resHpp').innerText = formatIDR(hpp);
+            document.getElementById('resMargin').innerText = formatIDR(margin);
+            document.getElementById('resROI').innerText = roi.toFixed(1) + "%";
+            
+            document.getElementById('saranHarga').innerHTML = `
+                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
+                    <span class="text-sm font-medium text-blue-700">Harga Jual Disarankan (Margin 50%)</span>
+                    <span class="text-lg font-black text-blue-900">${formatIDR(hargaJual)}</span>
+                </div>
+            `;
+
+            if(fc > 0) {
+                document.getElementById('resBEP').innerHTML = `Untuk menutupi biaya tetap <b>${formatIDR(fc)}</b>, Anda wajib menjual minimal <b>${bepUnit} unit</b> per bulan (dengan asumsi harga jual ${formatIDR(hargaJual)}).`;
+            } else {
+                document.getElementById('resBEP').innerText = "Masukkan biaya tetap untuk melihat target unit BEP.";
+            }
+
+            document.getElementById('hasilArea').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
